@@ -1,0 +1,886 @@
+<div id="onz-root"></div>
+<style>
+  #onz-root {
+    --ink: #16323A;
+    --teal: #1F6F6B;
+    --teal-dark: #164F4C;
+    --sand: #F3ECDC;
+    --paper: #FFFFFF;
+    --amber: #C98A28;
+    --amber-bg: #FBEED9;
+    --coral: #B3402F;
+    --coral-bg: #F8E2DD;
+    --sage: #4C7A54;
+    --sage-bg: #E3EEE2;
+    --slate: #6E7C7A;
+    --line: #DED2B8;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    background: var(--sand);
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+    box-sizing: border-box;
+  }
+  #onz-root *, #onz-root *::before, #onz-root *::after { box-sizing: border-box; }
+  #onz-root .wrap { max-width: 960px; margin: 0 auto; padding: 36px 24px 0; }
+
+  #onz-root .masthead { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
+  #onz-root .wordmark { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 34px; letter-spacing: -0.01em; color: var(--ink); margin: 0; }
+  #onz-root .wordmark span { color: var(--teal); }
+  #onz-root .tagline { font-size: 13px; color: var(--slate); margin: 0; font-family: 'Work Sans', sans-serif; }
+
+  #onz-root .conn-strip { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--slate); margin: 12px 0 22px; }
+  #onz-root .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--slate); flex-shrink: 0; }
+  #onz-root .conn-dot.on { background: var(--sage); }
+  #onz-root .conn-dot.off { background: var(--amber); }
+
+  #onz-root .tabs { display: flex; gap: 0; margin-bottom: 32px; }
+  #onz-root .tab {
+    flex: 1; text-align: center; padding: 14px 10px; cursor: pointer;
+    font-family: 'Fraunces', Georgia, serif; font-size: 16px; font-weight: 500;
+    background: var(--paper); border: 1px dashed var(--line); border-bottom: none;
+    color: var(--slate); position: relative; transition: background 0.15s, color 0.15s;
+  }
+  #onz-root .tab:not(:last-child) { border-right: none; }
+  #onz-root .tab.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+  #onz-root .panel { background: var(--paper); border: 1px solid var(--line); padding: 32px; }
+
+  #onz-root .section-title { font-family: 'Fraunces', Georgia, serif; font-size: 19px; font-weight: 600; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  #onz-root .section-title:not(:first-child) { margin-top: 32px; }
+  #onz-root .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+  #onz-root .field { display: flex; flex-direction: column; gap: 5px; }
+  #onz-root .field.full { grid-column: 1 / -1; }
+  #onz-root label { font-size: 12.5px; color: var(--slate); font-weight: 600; }
+  #onz-root input[type=text], #onz-root input[type=date], #onz-root input[type=url], #onz-root select, #onz-root textarea {
+    font-family: 'Work Sans', sans-serif; font-size: 14.5px; padding: 9px 10px; border: 1px solid var(--line);
+    background: #FCFAF4; color: var(--ink); outline: none; border-radius: 2px; width: 100%;
+  }
+  #onz-root input:focus, #onz-root select:focus, #onz-root textarea:focus { border-color: var(--teal); background: #fff; }
+  #onz-root textarea { resize: vertical; min-height: 64px; font-family: 'Work Sans', sans-serif; }
+  #onz-root .status-choices { display: flex; gap: 10px; flex-wrap: wrap; }
+  #onz-root .status-pill { padding: 8px 16px; border: 1px solid var(--line); cursor: pointer; font-size: 13.5px; background: #FCFAF4; user-select: none; }
+  #onz-root .status-pill.selected[data-status="Solved"] { background: var(--sage); border-color: var(--sage); color: #fff; }
+  #onz-root .status-pill.selected[data-status="In Progress"] { background: var(--amber); border-color: var(--amber); color: #fff; }
+  #onz-root .status-pill.selected[data-status="Not Yet Solved"] { background: var(--slate); border-color: var(--slate); color: #fff; }
+  #onz-root .status-pill.selected[data-status="Need GM Support"] { background: var(--coral); border-color: var(--coral); color: #fff; }
+
+  #onz-root .submit-row { display: flex; align-items: center; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  #onz-root .btn-primary { background: var(--teal); color: #fff; border: none; padding: 12px 26px; font-size: 14.5px; font-weight: 600; cursor: pointer; font-family: 'Work Sans', sans-serif; }
+  #onz-root .btn-primary:hover { background: var(--teal-dark); }
+  #onz-root .btn-primary:disabled { opacity: 0.55; cursor: default; }
+  #onz-root .btn-secondary { background: transparent; color: var(--slate); border: 1px solid var(--line); padding: 11px 20px; font-size: 14px; cursor: pointer; font-family: 'Work Sans', sans-serif; white-space: nowrap; }
+  #onz-root .btn-secondary:hover { border-color: var(--teal); color: var(--teal-dark); }
+  #onz-root .form-msg { font-size: 13.5px; color: var(--teal-dark); font-weight: 600; }
+  #onz-root .report-preview { font-size: 12.5px; color: var(--slate); }
+
+  #onz-root .log-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  #onz-root .log-controls input, #onz-root .log-controls select { min-width: 140px; width: auto; }
+  #onz-root .log-table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+  #onz-root table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 900px; }
+  #onz-root thead th { text-align: left; font-weight: 600; font-size: 11.5px; color: var(--slate); background: #FCFAF4; padding: 10px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  #onz-root tbody td { padding: 10px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  #onz-root tbody tr:hover { background: #FBF8EF; }
+  #onz-root .badge { display: inline-block; padding: 3px 9px; font-size: 11.5px; font-weight: 600; border-radius: 2px; white-space: nowrap; }
+  #onz-root .badge.NeedGMSupport { background: var(--coral-bg); color: var(--coral); }
+  #onz-root .status-select { font-size: 12px; padding: 4px 6px; border: 1px solid var(--line); background: #fff; width: auto; }
+  #onz-root .icon-btn { background: none; border: none; cursor: pointer; color: var(--slate); font-size: 15px; padding: 2px 6px; }
+  #onz-root .icon-btn:hover { color: var(--coral); }
+  #onz-root .empty-state { text-align: center; padding: 50px 20px; color: var(--slate); }
+  #onz-root .empty-state .big { font-family: 'Fraunces', Georgia, serif; font-size: 20px; color: var(--ink); margin-bottom: 6px; }
+  #onz-root .detail-text { max-width: 240px; white-space: normal; }
+  #onz-root .row-count { font-size: 12.5px; color: var(--slate); margin-bottom: 6px; min-height: 16px; }
+
+  #onz-root .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 32px; }
+  #onz-root .stat-box { background: var(--paper); padding: 20px 18px; }
+  #onz-root .stat-num { font-family: 'Fraunces', Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1; }
+  #onz-root .stat-label { font-size: 12.5px; color: var(--slate); margin-top: 8px; }
+  #onz-root .stat-box.solved .stat-num { color: var(--sage); }
+  #onz-root .stat-box.progress .stat-num { color: var(--amber); }
+  #onz-root .stat-box.gm .stat-num { color: var(--coral); }
+
+  #onz-root .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  #onz-root .chart-col .section-title { margin-top: 0; }
+  #onz-root .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  #onz-root .bar-label { width: 110px; font-size: 12.5px; flex-shrink: 0; }
+  #onz-root .bar-track { flex: 1; background: #EFEBE0; height: 16px; }
+  #onz-root .bar-fill { height: 100%; background: var(--teal); }
+  #onz-root .bar-val { width: 24px; font-size: 12.5px; text-align: right; color: var(--slate); flex-shrink: 0; }
+
+  /* Settings */
+  #onz-root .status-card { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--line); background: #FCFAF4; margin-bottom: 24px; }
+  #onz-root .status-card .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  #onz-root .status-card .dot.on { background: var(--sage); }
+  #onz-root .status-card .dot.off { background: var(--amber); }
+  #onz-root .status-card .title { font-weight: 600; margin-bottom: 3px; }
+  #onz-root .status-card .desc { font-size: 13px; color: var(--slate); }
+  #onz-root ol.steps { padding-left: 20px; font-size: 14px; line-height: 1.7; }
+  #onz-root ol.steps li { margin-bottom: 6px; }
+  #onz-root pre.code-block { background: #16323A; color: #E8F0EE; padding: 16px; font-size: 12px; overflow-x: auto; white-space: pre; border-radius: 2px; line-height: 1.6; margin: 10px 0 18px; }
+  #onz-root .copy-btn { font-size: 12px; padding: 5px 12px; }
+  #onz-root .url-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-top: 6px; }
+  #onz-root .url-row .field { flex: 1; min-width: 240px; }
+
+  @media (max-width: 720px) {
+    #onz-root .field-row { grid-template-columns: 1fr; }
+    #onz-root .stat-strip { grid-template-columns: 1fr 1fr; }
+    #onz-root .chart-grid { grid-template-columns: 1fr; }
+    #onz-root .tab { font-size: 12.5px; padding: 12px 4px; }
+    #onz-root .panel { padding: 20px 16px; }
+  }
+</style>
+
+<script>
+(function() {
+  const DEPARTMENTS = ["Reception", "Housekeeping", "Maintenance", "Kitchen / F&B", "Bar", "Activities", "Other"];
+  const STATUSES = ["Solved", "In Progress", "Not Yet Solved", "Need GM Support"];
+  const YESNO = ["Pending", "Yes", "No"];
+  const FIELDS = ["id","reportNo","date","department","title","guestName","roomNumber","teamMember","problem","story","actionTaken","followUp","status","needGMSupport","responsiblePerson","guestSatisfied","remarks","createdAt"];
+
+  let complaints = [];
+  let loaded = false;
+  let activeTab = 'form';
+  let logFilters = { department: '', status: '', search: '' };
+  let pendingStatusPill = 'Not Yet Solved';
+  let sheetsUrl = '';
+  let dataMode = 'local'; // 'local' | 'sheets'
+  let connError = '';
+
+  const root = document.getElementById('onz-root');
+
+  function loadFonts() {
+    if (document.getElementById('onz-fonts')) return;
+    const link = document.createElement('link');
+    link.id = 'onz-fonts';
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap';
+    document.head.appendChild(link);
+  }
+
+  function todayISO() { return new Date().toISOString().slice(0, 10); }
+
+  function genReportNo() {
+    const d = new Date();
+    const ymd = d.getFullYear().toString() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return 'ONZ-' + ymd + '-' + rand;
+  }
+
+  function escapeHtml(s) {
+    if (s === undefined || s === null) return '';
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function normalizeRecord(r) {
+    const rec = {};
+    FIELDS.forEach(f => rec[f] = r[f] !== undefined && r[f] !== null ? String(r[f]) : '');
+    return rec;
+  }
+
+  // ---------- DATA LAYER ----------
+  async function initDataLayer() {
+    try {
+      const res = await window.storage.get('sheetsUrl', true);
+      sheetsUrl = res && res.value ? res.value : '';
+    } catch (e) { sheetsUrl = ''; }
+    dataMode = sheetsUrl ? 'sheets' : 'local';
+  }
+
+  async function fetchAllComplaints() {
+    connError = '';
+    if (dataMode === 'sheets') {
+      try {
+        const res = await fetch(sheetsUrl, { method: 'GET' });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Sheet returned an error');
+        complaints = (json.complaints || []).map(normalizeRecord).reverse();
+      } catch (err) {
+        connError = err.message || String(err);
+        complaints = [];
+      }
+    } else {
+      try {
+        const res = await window.storage.get('complaints', true);
+        complaints = res && res.value ? JSON.parse(res.value) : [];
+      } catch (e) {
+        complaints = [];
+      }
+    }
+  }
+
+  async function persistLocalAll() {
+    const result = await window.storage.set('complaints', JSON.stringify(complaints), true);
+    if (!result) throw new Error('Storage returned no result');
+  }
+
+  async function sheetsPost(payload) {
+    const res = await fetch(sheetsUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Sheet write failed');
+    return json;
+  }
+
+  async function addComplaint(record) {
+    complaints.unshift(record);
+    if (dataMode === 'sheets') await sheetsPost({ action: 'add', record });
+    else await persistLocalAll();
+  }
+
+  async function updateComplaint(record) {
+    const idx = complaints.findIndex(c => c.id === record.id);
+    if (idx > -1) complaints[idx] = record;
+    if (dataMode === 'sheets') await sheetsPost({ action: 'update', record });
+    else await persistLocalAll();
+  }
+
+  async function deleteComplaint(id) {
+    complaints = complaints.filter(c => c.id !== id);
+    if (dataMode === 'sheets') await sheetsPost({ action: 'delete', id });
+    else await persistLocalAll();
+  }
+
+  // ---------- EXCEL EXPORT / IMPORT ----------
+  let sheetJsPromise = null;
+  function loadSheetJS() {
+    if (window.XLSX) return Promise.resolve();
+    if (sheetJsPromise) return sheetJsPromise;
+    sheetJsPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('Could not load the Excel library'));
+      document.head.appendChild(s);
+    });
+    return sheetJsPromise;
+  }
+
+  const XLSX_HEADERS = ["No","Date","Department","Report No.","Guest / Room / Team","Title","Problem / Complaint","Story / Details","Action Taken","Status","Follow-up / Next Action","Responsible Person","Need GM Support?","Guest Satisfied?","Remarks","Photo / Evidence Link"];
+
+  async function exportToExcel() {
+    await loadSheetJS();
+    const rows = complaints.map((c, i) => [
+      i + 1, c.date || '', c.department || '', c.reportNo || '',
+      [c.guestName, c.roomNumber ? 'Room ' + c.roomNumber : '', c.teamMember].filter(Boolean).join(' / '),
+      c.title || '', c.problem || '', c.story || '', c.actionTaken || '', c.status || '',
+      c.followUp || '', c.responsiblePerson || '', c.needGMSupport || '', c.guestSatisfied || '', c.remarks || '', ''
+    ]);
+    const ws = XLSX.utils.aoa_to_sheet([XLSX_HEADERS, ...rows]);
+    ws['!cols'] = XLSX_HEADERS.map(() => ({ wch: 22 }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Complaint Database');
+    XLSX.writeFile(wb, 'Onederz_Complaint_Database_' + todayISO() + '.xlsx');
+  }
+
+  async function importFromExcel(file) {
+    await loadSheetJS();
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheetName = wb.SheetNames.includes('Complaint Database') ? 'Complaint Database' : wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+    const parsedRows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    let added = 0, skipped = 0;
+    for (const r of parsedRows) {
+      const reportNo = String(r['Report No.'] || r['Report No'] || '').trim();
+      if (reportNo && complaints.some(c => c.reportNo === reportNo)) { skipped++; continue; }
+      const guestRoomTeam = String(r['Guest / Room / Team'] || '');
+      const parts = guestRoomTeam.split('/').map(p => p.trim());
+      const roomPart = parts.find(p => /room/i.test(p)) || '';
+      const record = {
+        id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        reportNo: reportNo || genReportNo(),
+        date: String(r['Date'] || ''),
+        department: String(r['Department'] || ''),
+        title: String(r['Title'] || ''),
+        guestName: parts[0] || '',
+        roomNumber: roomPart.replace(/room/i, '').trim(),
+        teamMember: parts.length > 2 ? parts[2] : '',
+        problem: String(r['Problem / Complaint'] || ''),
+        story: String(r['Story / Details'] || ''),
+        actionTaken: String(r['Action Taken'] || ''),
+        followUp: String(r['Follow-up / Next Action'] || ''),
+        status: STATUSES.includes(r['Status']) ? r['Status'] : 'Not Yet Solved',
+        needGMSupport: r['Need GM Support?'] === 'Yes' ? 'Yes' : 'No',
+        responsiblePerson: String(r['Responsible Person'] || ''),
+        guestSatisfied: YESNO.includes(r['Guest Satisfied?']) ? r['Guest Satisfied?'] : 'Pending',
+        remarks: String(r['Remarks'] || ''),
+        createdAt: new Date().toISOString()
+      };
+      await addComplaint(record);
+      added++;
+    }
+    return { added, skipped };
+  }
+
+  // ---------- FORM ----------
+  function renderFormPanel() {
+    return `
+      <div class="panel">
+        <form id="onz-form">
+          <div class="section-title">1 · Report Details</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Department</label>
+              <select name="department">
+                <option value="" selected>Select department</option>
+                ${DEPARTMENTS.map(d => `<option value="${d}">${d}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Date</label>
+              <input type="date" name="date" value="${todayISO()}">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field full">
+              <label>Title</label>
+              <input type="text" name="title" placeholder="Short summary, e.g. AC not cooling in Room 214">
+            </div>
+          </div>
+
+          <div class="section-title">2 · Guest / Team Information</div>
+          <div class="field-row">
+            <div class="field"><label>Guest name</label><input type="text" name="guestName" placeholder="Guest name"></div>
+            <div class="field"><label>Room number</label><input type="text" name="roomNumber" placeholder="e.g. 214"></div>
+          </div>
+          <div class="field-row">
+            <div class="field full"><label>Team member (reporting)</label><input type="text" name="teamMember" placeholder="Your name"></div>
+          </div>
+
+          <div class="section-title">3 · Problem / Complaint</div>
+          <div class="field-row"><div class="field full"><textarea name="problem" placeholder="What went wrong?"></textarea></div></div>
+
+          <div class="section-title">4 · Story / Details</div>
+          <div class="field-row"><div class="field full"><textarea name="story" placeholder="Full account of what happened"></textarea></div></div>
+
+          <div class="section-title">5 · Action Taken / How It Was Solved</div>
+          <div class="field-row"><div class="field full"><textarea name="actionTaken" placeholder="What was done in response"></textarea></div></div>
+
+          <div class="section-title">6 · Follow-up / Next Action</div>
+          <div class="field-row"><div class="field full"><textarea name="followUp" placeholder="Anything still outstanding"></textarea></div></div>
+
+          <div class="section-title">7 · Status</div>
+          <div class="status-choices" id="onz-status-choices">
+            ${STATUSES.map(s => `<div class="status-pill ${s === pendingStatusPill ? 'selected' : ''}" data-status="${s}">${s}</div>`).join('')}
+          </div>
+
+          <div class="section-title">8 · Wrap-up</div>
+          <div class="field-row">
+            <div class="field"><label>Responsible person</label><input type="text" name="responsiblePerson" placeholder="Who owns this"></div>
+            <div class="field"><label>Guest satisfied?</label>
+              <select name="guestSatisfied">${YESNO.map(o => `<option value="${o}">${o}</option>`).join('')}</select>
+            </div>
+          </div>
+          <div class="field-row"><div class="field full"><label>Remarks</label><input type="text" name="remarks" placeholder="Optional notes"></div></div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn-primary" id="onz-submit-btn">Submit complaint</button>
+            <button type="button" class="btn-secondary" id="onz-clear-btn">Clear form</button>
+            <span class="form-msg" id="onz-form-msg"></span>
+          </div>
+        </form>
+      </div>
+    `;
+  }
+
+  function wireFormPanel() {
+    const form = document.getElementById('onz-form');
+    if (!form) return;
+    document.getElementById('onz-status-choices').addEventListener('click', (e) => {
+      const pill = e.target.closest('.status-pill');
+      if (!pill) return;
+      pendingStatusPill = pill.dataset.status;
+      document.querySelectorAll('#onz-status-choices .status-pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+    });
+    document.getElementById('onz-clear-btn').addEventListener('click', () => {
+      pendingStatusPill = 'Not Yet Solved';
+      render();
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('onz-form-msg');
+      const btn = document.getElementById('onz-submit-btn');
+      const fd = new FormData(form);
+
+      const missing = [];
+      if (!fd.get('department')) missing.push('Department');
+      if (!fd.get('title') || !fd.get('title').trim()) missing.push('Title');
+      if (!fd.get('problem') || !fd.get('problem').trim()) missing.push('Problem / Complaint');
+      if (missing.length) {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Please fill in: ' + missing.join(', ');
+        return;
+      }
+
+      const record = {
+        id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        reportNo: genReportNo(),
+        date: fd.get('date') || todayISO(),
+        department: fd.get('department'),
+        title: fd.get('title'),
+        guestName: fd.get('guestName') || '',
+        roomNumber: fd.get('roomNumber') || '',
+        teamMember: fd.get('teamMember') || '',
+        problem: fd.get('problem') || '',
+        story: fd.get('story') || '',
+        actionTaken: fd.get('actionTaken') || '',
+        followUp: fd.get('followUp') || '',
+        status: pendingStatusPill,
+        needGMSupport: pendingStatusPill === 'Need GM Support' ? 'Yes' : 'No',
+        responsiblePerson: fd.get('responsiblePerson') || '',
+        guestSatisfied: fd.get('guestSatisfied') || 'Pending',
+        remarks: fd.get('remarks') || '',
+        createdAt: new Date().toISOString()
+      };
+
+      btn.disabled = true;
+      msg.style.color = 'var(--teal-dark)';
+      msg.textContent = 'Saving…';
+      try {
+        await addComplaint(record);
+        pendingStatusPill = 'Not Yet Solved';
+        msg.textContent = 'Saved ' + record.reportNo + ' ✓';
+        form.reset();
+      } catch (err) {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Could not save: ' + err.message;
+      }
+      btn.disabled = false;
+      render();
+    });
+  }
+
+  // ---------- LOG ----------
+  function filteredComplaints() {
+    return complaints.filter(c => {
+      if (logFilters.department && c.department !== logFilters.department) return false;
+      if (logFilters.status && c.status !== logFilters.status) return false;
+      if (logFilters.search) {
+        const q = logFilters.search.toLowerCase();
+        const hay = [c.title, c.guestName, c.roomNumber, c.reportNo, c.teamMember].join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderLogPanel() {
+    const rows = filteredComplaints();
+    return `
+      <div class="panel">
+        ${connError ? `<div class="row-count" style="color:var(--coral)">Could not reach the Google Sheet: ${escapeHtml(connError)} — go to Settings to check the connection.</div>` : ''}
+        <div class="log-controls">
+          <input type="text" id="onz-search" placeholder="Search title, guest, room, report no…" value="${escapeHtml(logFilters.search)}">
+          <select id="onz-filter-dept">
+            <option value="">All departments</option>
+            ${DEPARTMENTS.map(d => `<option value="${d}" ${logFilters.department===d?'selected':''}>${d}</option>`).join('')}
+          </select>
+          <select id="onz-filter-status">
+            <option value="">All statuses</option>
+            ${STATUSES.map(s => `<option value="${s}" ${logFilters.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button type="button" class="btn-secondary" id="onz-refresh-btn">↻ Refresh</button>
+          <button type="button" class="btn-secondary" id="onz-export-btn">Export to Excel</button>
+          <button type="button" class="btn-secondary" id="onz-import-btn">Import from Excel</button>
+          <input type="file" id="onz-import-file" accept=".xlsx,.xls" style="display:none">
+        </div>
+        <div class="row-count">${rows.length} of ${complaints.length} complaint${complaints.length===1?'':'s'}</div>
+        <div class="row-count" id="onz-io-msg"></div>
+        ${rows.length === 0 ? `
+          <div class="empty-state">
+            <div class="big">No complaints here</div>
+            <div>${complaints.length === 0 ? 'Once a complaint is submitted, it will show up in this log.' : 'Try adjusting your filters.'}</div>
+          </div>
+        ` : `
+        <div class="log-table-wrap">
+          <table>
+            <thead><tr>
+              <th>Report No.</th><th>Date</th><th>Department</th><th>Title</th>
+              <th>Guest / Room</th><th>Problem</th><th>Status</th><th>GM?</th><th>Satisfied</th><th></th>
+            </tr></thead>
+            <tbody>
+              ${rows.map(c => `
+                <tr data-id="${c.id}">
+                  <td><strong>${escapeHtml(c.reportNo)}</strong></td>
+                  <td>${escapeHtml(c.date)}</td>
+                  <td>${escapeHtml(c.department)}</td>
+                  <td class="detail-text">${escapeHtml(c.title)}</td>
+                  <td>${escapeHtml(c.guestName)}${c.roomNumber ? ' · ' + escapeHtml(c.roomNumber) : ''}</td>
+                  <td class="detail-text">${escapeHtml(c.problem)}</td>
+                  <td>
+                    <select class="status-select" data-id="${c.id}">
+                      ${STATUSES.map(s => `<option value="${s}" ${c.status===s?'selected':''}>${s}</option>`).join('')}
+                    </select>
+                  </td>
+                  <td><span class="badge ${c.needGMSupport==='Yes' ? 'NeedGMSupport' : ''}">${c.needGMSupport}</span></td>
+                  <td>${escapeHtml(c.guestSatisfied)}</td>
+                  <td><button class="icon-btn" data-del="${c.id}" title="Delete">✕</button></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        `}
+      </div>
+    `;
+  }
+
+  function wireLogPanel() {
+    const search = document.getElementById('onz-search');
+    const fdept = document.getElementById('onz-filter-dept');
+    const fstat = document.getElementById('onz-filter-status');
+    if (search) search.addEventListener('input', (e) => { logFilters.search = e.target.value; rerenderLogOnly(); });
+    if (fdept) fdept.addEventListener('change', (e) => { logFilters.department = e.target.value; rerenderLogOnly(); });
+    if (fstat) fstat.addEventListener('change', (e) => { logFilters.status = e.target.value; rerenderLogOnly(); });
+
+    document.querySelectorAll('.status-select').forEach(sel => {
+      sel.addEventListener('change', async (e) => {
+        const id = e.target.dataset.id;
+        const rec = complaints.find(c => c.id === id);
+        if (!rec) return;
+        const updated = Object.assign({}, rec, { status: e.target.value, needGMSupport: e.target.value === 'Need GM Support' ? 'Yes' : 'No' });
+        const ioMsg = document.getElementById('onz-io-msg');
+        try {
+          await updateComplaint(updated);
+        } catch (err) {
+          ioMsg.style.color = 'var(--coral)';
+          ioMsg.textContent = 'Could not update status: ' + err.message;
+        }
+        rerenderLogOnly();
+      });
+    });
+    document.querySelectorAll('[data-del]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.dataset.del;
+        if (!confirm('Delete this complaint record? This cannot be undone.')) return;
+        try {
+          await deleteComplaint(id);
+        } catch (err) {
+          const ioMsg = document.getElementById('onz-io-msg');
+          ioMsg.style.color = 'var(--coral)';
+          ioMsg.textContent = 'Could not delete: ' + err.message;
+        }
+        rerenderLogOnly();
+      });
+    });
+
+    const ioMsg = document.getElementById('onz-io-msg');
+    const refreshBtn = document.getElementById('onz-refresh-btn');
+    const exportBtn = document.getElementById('onz-export-btn');
+    const importBtn = document.getElementById('onz-import-btn');
+    const importFile = document.getElementById('onz-import-file');
+
+    if (refreshBtn) refreshBtn.addEventListener('click', async () => {
+      ioMsg.style.color = 'var(--slate)';
+      ioMsg.textContent = 'Refreshing…';
+      await fetchAllComplaints();
+      rerenderLogOnly();
+    });
+
+    if (exportBtn) exportBtn.addEventListener('click', async () => {
+      ioMsg.style.color = 'var(--slate)';
+      ioMsg.textContent = 'Preparing Excel file…';
+      try {
+        await exportToExcel();
+        ioMsg.style.color = 'var(--teal-dark)';
+        ioMsg.textContent = 'Downloaded ✓';
+      } catch (err) {
+        ioMsg.style.color = 'var(--coral)';
+        ioMsg.textContent = 'Export failed: ' + err.message;
+      }
+    });
+
+    if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+    if (importFile) importFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      ioMsg.style.color = 'var(--slate)';
+      ioMsg.textContent = 'Importing…';
+      try {
+        const { added, skipped } = await importFromExcel(file);
+        ioMsg.style.color = 'var(--teal-dark)';
+        ioMsg.textContent = `Imported ${added} complaint${added===1?'':'s'}${skipped ? `, skipped ${skipped} already in the log` : ''} ✓`;
+        rerenderLogOnly();
+      } catch (err) {
+        ioMsg.style.color = 'var(--coral)';
+        ioMsg.textContent = 'Import failed: ' + err.message;
+      }
+      importFile.value = '';
+    });
+  }
+
+  function rerenderLogOnly() {
+    const container = document.getElementById('onz-panel-container');
+    if (container) { container.innerHTML = renderLogPanel(); wireLogPanel(); }
+  }
+
+  // ---------- DASHBOARD ----------
+  function renderDashboardPanel() {
+    const total = complaints.length;
+    const countBy = (pred) => complaints.filter(pred).length;
+    const solved = countBy(c => c.status === 'Solved');
+    const progress = countBy(c => c.status === 'In Progress');
+    const gm = countBy(c => c.needGMSupport === 'Yes');
+
+    const byDept = {}; DEPARTMENTS.forEach(d => byDept[d] = 0);
+    complaints.forEach(c => { byDept[c.department] = (byDept[c.department] || 0) + 1; });
+    const maxDept = Math.max(1, ...Object.values(byDept));
+
+    const byStatus = {}; STATUSES.forEach(s => byStatus[s] = 0);
+    complaints.forEach(c => { byStatus[c.status] = (byStatus[c.status] || 0) + 1; });
+    const maxStatus = Math.max(1, ...Object.values(byStatus));
+
+    return `
+      <div class="panel">
+        <div class="stat-strip">
+          <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Total complaints</div></div>
+          <div class="stat-box solved"><div class="stat-num">${solved}</div><div class="stat-label">Solved</div></div>
+          <div class="stat-box progress"><div class="stat-num">${progress}</div><div class="stat-label">In progress</div></div>
+          <div class="stat-box gm"><div class="stat-num">${gm}</div><div class="stat-label">Need GM support</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-col">
+            <div class="section-title">Complaints by Department</div>
+            ${DEPARTMENTS.map(d => `
+              <div class="bar-row"><div class="bar-label">${d}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${(byDept[d]/maxDept*100).toFixed(0)}%"></div></div>
+                <div class="bar-val">${byDept[d]}</div></div>
+            `).join('')}
+          </div>
+          <div class="chart-col">
+            <div class="section-title">Complaints by Status</div>
+            ${STATUSES.map(s => `
+              <div class="bar-row"><div class="bar-label">${s}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${(byStatus[s]/maxStatus*100).toFixed(0)}%; background:${
+                  s === 'Solved' ? 'var(--sage)' : s === 'In Progress' ? 'var(--amber)' : s === 'Need GM Support' ? 'var(--coral)' : 'var(--slate)'
+                }"></div></div>
+                <div class="bar-val">${byStatus[s]}</div></div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ---------- SETTINGS ----------
+  const APPS_SCRIPT_CODE = `const SHEET_NAME = 'Complaints';
+const FIELDS = ['id','reportNo','date','department','title','guestName','roomNumber','teamMember','problem','story','actionTaken','followUp','status','needGMSupport','responsiblePerson','guestSatisfied','remarks','createdAt'];
+
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(FIELDS);
+  }
+  return sheet;
+}
+
+function doGet(e) {
+  const sheet = getSheet_();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = row[i] !== undefined ? row[i] : '');
+    return obj;
+  });
+  return ContentService.createTextOutput(JSON.stringify({ ok: true, complaints: rows }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const sheet = getSheet_();
+    if (body.action === 'add') {
+      const r = body.record;
+      sheet.appendRow(FIELDS.map(f => r[f] !== undefined ? r[f] : ''));
+      return out_({ ok: true });
+    }
+    if (body.action === 'update') {
+      const r = body.record;
+      const rowIndex = findRow_(sheet, r.id);
+      if (rowIndex === -1) return out_({ ok: false, error: 'Record not found' });
+      sheet.getRange(rowIndex, 1, 1, FIELDS.length).setValues([FIELDS.map(f => r[f] !== undefined ? r[f] : '')]);
+      return out_({ ok: true });
+    }
+    if (body.action === 'delete') {
+      const rowIndex = findRow_(sheet, body.id);
+      if (rowIndex === -1) return out_({ ok: false, error: 'Record not found' });
+      sheet.deleteRow(rowIndex);
+      return out_({ ok: true });
+    }
+    return out_({ ok: false, error: 'Unknown action' });
+  } catch (err) {
+    return out_({ ok: false, error: err.message });
+  }
+}
+
+function findRow_(sheet, id) {
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) if (data[i][0] === id) return i + 1;
+  return -1;
+}
+
+function out_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+  function renderSettingsPanel() {
+    const connected = dataMode === 'sheets' && !connError;
+    return `
+      <div class="panel">
+        <div class="status-card">
+          <div class="dot ${connected ? 'on' : 'off'}"></div>
+          <div>
+            <div class="title">${dataMode === 'sheets' ? (connError ? 'Connected, but the last request failed' : 'Connected to Google Sheet') : 'Using built-in storage (not connected to a Sheet)'}</div>
+            <div class="desc">${dataMode === 'sheets'
+              ? (connError ? escapeHtml(connError) : 'Every submission, status change, and delete writes straight into your Google Sheet. Everyone using this link shares the same sheet.')
+              : 'Data is saved in this app\'s own shared storage. Connect a Google Sheet below for a real external backend you can view/edit directly in Sheets.'}</div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:0">Connect a Google Sheet</div>
+        <ol class="steps">
+          <li>Create a new blank <strong>Google Sheet</strong> (this will become your live complaint database).</li>
+          <li>In the Sheet, go to <strong>Extensions → Apps Script</strong>.</li>
+          <li>Delete any starter code, then paste in the script below.</li>
+          <li>Click <strong>Deploy → New deployment</strong>. For "Select type" choose <strong>Web app</strong>.</li>
+          <li>Set <strong>Execute as: Me</strong>, and <strong>Who has access: Anyone</strong>. Click Deploy, then authorize when prompted.</li>
+          <li>Copy the <strong>Web app URL</strong> it gives you and paste it below, then click Connect.</li>
+        </ol>
+        <pre class="code-block" id="onz-code-block">${escapeHtml(APPS_SCRIPT_CODE)}</pre>
+        <button type="button" class="btn-secondary copy-btn" id="onz-copy-code">Copy script to clipboard</button>
+
+        <div class="section-title">Web App URL</div>
+        <div class="url-row">
+          <div class="field">
+            <input type="url" id="onz-sheets-url" placeholder="https://script.google.com/macros/s/…/exec" value="${escapeHtml(sheetsUrl)}">
+          </div>
+          <button type="button" class="btn-primary" id="onz-connect-btn">Connect</button>
+          ${dataMode === 'sheets' ? `<button type="button" class="btn-secondary" id="onz-disconnect-btn">Disconnect</button>` : ''}
+        </div>
+        <div class="form-msg" id="onz-settings-msg" style="margin-top:10px; display:block;"></div>
+      </div>
+    `;
+  }
+
+  function wireSettingsPanel() {
+    const copyBtn = document.getElementById('onz-copy-code');
+    if (copyBtn) copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(APPS_SCRIPT_CODE);
+        copyBtn.textContent = 'Copied ✓';
+        setTimeout(() => copyBtn.textContent = 'Copy script to clipboard', 1800);
+      } catch (e) {
+        const msg = document.getElementById('onz-settings-msg');
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Could not copy automatically — select the text above and copy manually.';
+      }
+    });
+
+    const connectBtn = document.getElementById('onz-connect-btn');
+    if (connectBtn) connectBtn.addEventListener('click', async () => {
+      const input = document.getElementById('onz-sheets-url');
+      const msg = document.getElementById('onz-settings-msg');
+      const url = input.value.trim();
+      if (!url) { msg.style.color = 'var(--coral)'; msg.textContent = 'Paste your Web App URL first.'; return; }
+      msg.style.color = 'var(--slate)';
+      msg.textContent = 'Testing connection…';
+      connectBtn.disabled = true;
+      try {
+        const res = await fetch(url, { method: 'GET' });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Sheet did not respond as expected');
+        sheetsUrl = url;
+        dataMode = 'sheets';
+        connError = '';
+        await window.storage.set('sheetsUrl', url, true);
+        await fetchAllComplaints();
+        msg.style.color = 'var(--teal-dark)';
+        msg.textContent = 'Connected ✓ Loaded ' + complaints.length + ' complaint(s) from the Sheet.';
+        render();
+      } catch (err) {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Could not connect: ' + err.message + '. Double check the deployment is set to "Anyone" access and the URL ends in /exec.';
+      }
+      connectBtn.disabled = false;
+    });
+
+    const disconnectBtn = document.getElementById('onz-disconnect-btn');
+    if (disconnectBtn) disconnectBtn.addEventListener('click', async () => {
+      if (!confirm('Disconnect from the Google Sheet and switch back to built-in storage?')) return;
+      sheetsUrl = '';
+      dataMode = 'local';
+      connError = '';
+      await window.storage.set('sheetsUrl', '', true);
+      await fetchAllComplaints();
+      render();
+    });
+  }
+
+  // ---------- SHELL ----------
+  function render() {
+    if (!loaded) {
+      root.innerHTML = `<div class="wrap"><div class="panel" style="text-align:center; color: var(--slate);">Loading complaint database…</div></div>`;
+      return;
+    }
+    const tabs = [
+      { id: 'form', label: 'New Complaint' },
+      { id: 'log', label: 'Complaint Log' },
+      { id: 'dashboard', label: 'Dashboard' },
+      { id: 'settings', label: 'Settings' }
+    ];
+    let panelHtml = '';
+    if (activeTab === 'form') panelHtml = renderFormPanel();
+    else if (activeTab === 'log') panelHtml = renderLogPanel();
+    else if (activeTab === 'dashboard') panelHtml = renderDashboardPanel();
+    else panelHtml = renderSettingsPanel();
+
+    root.innerHTML = `
+      <div class="wrap">
+        <div class="masthead">
+          <div><p class="wordmark">Onederz<span>.</span></p><p class="tagline">Guest Complaint &amp; Feedback Report</p></div>
+          <p class="tagline">${todayISO()}</p>
+        </div>
+        <div class="conn-strip">
+          <div class="conn-dot ${dataMode === 'sheets' && !connError ? 'on' : 'off'}"></div>
+          <span>${dataMode === 'sheets' ? (connError ? 'Google Sheet connection issue — see Settings' : 'Synced to Google Sheet') : 'Built-in storage (not linked to a Sheet)'}</span>
+        </div>
+        <div class="tabs">
+          ${tabs.map(t => `<div class="tab ${activeTab===t.id?'active':''}" data-tab="${t.id}">${t.label}</div>`).join('')}
+        </div>
+        <div id="onz-panel-container">${panelHtml}</div>
+      </div>
+    `;
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', async () => {
+        activeTab = tab.dataset.tab;
+        if (activeTab === 'log' || activeTab === 'dashboard') await fetchAllComplaints();
+        render();
+      });
+    });
+
+    if (activeTab === 'form') wireFormPanel();
+    else if (activeTab === 'log') wireLogPanel();
+    else if (activeTab === 'settings') wireSettingsPanel();
+  }
+
+  async function init() {
+    loadFonts();
+    render();
+    await initDataLayer();
+    await fetchAllComplaints();
+    loaded = true;
+    render();
+  }
+
+  init();
+})();
+</script>
