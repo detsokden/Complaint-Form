@@ -30,6 +30,8 @@
       --amber-soft: #FFF3DF;
       --red: #FF5C5C;
       --red-soft: #FFE5E5;
+      --dark-red: #B71C1C;
+      --dark-red-soft: #FDE0E0;
       --bg: #F7F8FC;
       --paper: #FFFFFF;
       --line: #EEF0F6;
@@ -460,8 +462,8 @@
 
     .status-pill.selected[data-status="Solved"] { background: var(--mint-soft); border-color: var(--mint); color: #1A8F72; }
     .status-pill.selected[data-status="In Progress"] { background: var(--amber-soft); border-color: var(--amber); color: #B5791F; }
-    .status-pill.selected[data-status="Not Yet Solved"] { background: var(--blue-soft); border-color: var(--blue); color: #2B7ED6; }
-    .status-pill.selected[data-status="Need GM Support"] { background: var(--red-soft); border-color: var(--red); color: #D13E3E; }
+    .status-pill.selected[data-status="Not Yet Solved"] { background: var(--red-soft); border-color: var(--red); color: #D13E3E; }
+    .status-pill.selected[data-status="Need GM Support"] { background: var(--dark-red-soft); border-color: var(--dark-red); color: var(--dark-red); }
 
     /* ---- buttons ---- */
     .submit-row {
@@ -552,121 +554,321 @@
       font-weight: 500;
     }
 
-    /* ---- log cards ---- */
+    /* ---- compact log cards ---- */
     .log-cards {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .log-card {
       background: var(--paper);
       border: 1px solid var(--line-soft);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.2s;
+      transition: box-shadow 0.2s, border-color 0.15s, transform 0.1s;
+      cursor: pointer;
     }
-    .log-card:active { box-shadow: var(--shadow-md); }
+    .log-card:active { transform: scale(0.99); box-shadow: var(--shadow-md); border-color: var(--blue); }
 
     .log-card-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      align-items: flex-start;
+      gap: 10px;
     }
     .log-card-report {
       font-weight: 600;
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--blue);
       background: var(--blue-soft);
-      padding: 4px 10px;
-      border-radius: 8px;
-      line-height: 1.2;
+      padding: 3px 9px;
+      border-radius: 7px;
+      line-height: 1.3;
+      word-break: break-all;
     }
     .log-card-date {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--ink-mute);
       white-space: nowrap;
       font-weight: 500;
+      flex-shrink: 0;
+      padding-top: 3px;
     }
 
     .log-card-title {
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--ink);
       line-height: 1.35;
-    }
-
-    .log-card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 11.5px;
-      color: var(--ink-soft);
-    }
-
-    .log-card-meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--bg);
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: 500;
-    }
-    .log-card-meta i { font-size: 12px; line-height: 1; }
-
-    .log-card-problem {
-      font-size: 13px;
-      color: var(--ink-soft);
-      background: var(--bg);
-      padding: 10px 12px;
-      border-radius: 10px;
-      line-height: 1.45;
       word-break: break-word;
     }
 
-    .log-card-actions {
+    .log-card-foot {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 10px;
-      padding-top: 12px;
+      padding-top: 8px;
       border-top: 1px solid var(--line-soft);
-      flex-wrap: wrap;
     }
 
-    .log-card-actions .status-select {
-      flex: 1;
-      min-width: 130px;
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 10px;
+    .log-card-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 7px;
       background: var(--bg);
+      color: var(--ink-soft);
+    }
+    .log-card-status[data-status="Solved"] { background: var(--mint-soft); color: #1A8F72; }
+    .log-card-status[data-status="In Progress"] { background: var(--amber-soft); color: #B5791F; }
+    .log-card-status[data-status="Not Yet Solved"] { background: var(--red-soft); color: #D13E3E; }
+    .log-card-status[data-status="Need GM Support"] { background: var(--dark-red-soft); color: var(--dark-red); }
+
+    .log-card-view {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background 0.15s;
+    }
+    .log-card-view:hover { background: #D9E9FF; }
+
+    /* ---- detail modal ---- */
+    .detail-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      background: rgba(26, 29, 46, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      animation: fadeIn 0.2s ease;
+    }
+    @media (min-width: 560px) {
+      .detail-modal-overlay { align-items: center; padding: 20px; }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .detail-modal {
+      background: var(--paper);
+      border-radius: 22px 22px 0 0;
+      max-width: 640px;
+      width: 100%;
+      max-height: 92vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.25s ease;
+    }
+    @media (min-width: 560px) {
+      .detail-modal { border-radius: var(--radius); animation: popIn 0.25s ease; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
-    .log-card-actions .icon-btn {
-      width: 40px;
-      height: 40px;
+    .detail-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      flex-shrink: 0;
+      gap: 10px;
+    }
+    .detail-modal-head-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .detail-modal-report {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--blue);
+      background: var(--blue-soft);
+      padding: 4px 10px;
+      border-radius: 8px;
+      align-self: flex-start;
+      word-break: break-all;
+    }
+    .detail-modal-when {
+      font-size: 11.5px;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+    .detail-modal-close {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--paper);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid var(--line);
-      background: var(--paper);
-      font-size: 15px;
-      border-radius: 10px;
       cursor: pointer;
       color: var(--ink-mute);
+      font-size: 15px;
       transition: color 0.15s, background 0.15s, border-color 0.15s;
       flex-shrink: 0;
     }
-    .log-card-actions .icon-btn:active { transform: scale(0.94); }
-    .log-card-actions .icon-btn:hover { color: var(--red); border-color: var(--red); background: var(--red-soft); }
+    .detail-modal-close:active { transform: scale(0.94); }
+    .detail-modal-close:hover { color: var(--red); border-color: var(--red); background: var(--red-soft); }
 
-    /* ---- photo view button ---- */
+    .detail-modal-body {
+      padding: 18px 20px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--bg);
+    }
+
+    .detail-section {
+      background: var(--paper);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-soft);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .detail-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+    .detail-row .k {
+      font-size: 11px;
+      color: var(--ink-mute);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .detail-row .v {
+      font-size: 13.5px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.45;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .detail-row .v.empty { color: var(--ink-mute); font-style: italic; font-weight: 400; }
+
+    .detail-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .detail-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--ink-soft);
+      align-self: flex-start;
+    }
+    .detail-badge.solved { background: var(--mint-soft); color: #1A8F72; }
+    .detail-badge.progress { background: var(--amber-soft); color: #B5791F; }
+    .detail-badge.notyet { background: var(--red-soft); color: #D13E3E; }
+    .detail-badge.gm { background: var(--dark-red-soft); color: var(--dark-red); }
+
+    .detail-photo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue);
+      background: var(--blue-soft);
+      padding: 11px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      align-self: flex-start;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .detail-photo-btn:active { transform: scale(0.97); background: #D9E9FF; }
+
+    .detail-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .detail-modal-actions .row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .detail-modal-actions select {
+      flex: 1;
+      font-size: 14px;
+      padding: 13px 15px;
+    }
+
+    .detail-delete-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--red-soft);
+      background: var(--red-soft);
+      color: #D13E3E;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      width: 100%;
+    }
+    .detail-delete-btn:active { transform: scale(0.98); background: #FFD5D5; }
+
+    /* ---- photo view button (kept) ---- */
     .photo-view-btn {
       display: inline-flex;
       align-items: center;
@@ -690,8 +892,8 @@
     .photo-modal-overlay {
       position: fixed;
       inset: 0;
-      z-index: 200;
-      background: rgba(26, 29, 46, 0.7);
+      z-index: 300;
+      background: rgba(26, 29, 46, 0.75);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
@@ -700,7 +902,6 @@
       padding: 20px;
       animation: fadeIn 0.2s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .photo-modal {
       background: var(--paper);
@@ -713,10 +914,6 @@
       flex-direction: column;
       box-shadow: var(--shadow-lg);
       animation: popIn 0.25s ease;
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.94); }
-      to { opacity: 1; transform: scale(1); }
     }
     .photo-modal-head {
       display: flex;
@@ -795,23 +992,49 @@
     .photo-drop {
       border: 2px dashed var(--line);
       border-radius: var(--radius);
-      padding: 30px 16px;
+      padding: 22px 16px;
       text-align: center;
-      cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
       background: var(--bg);
     }
-    .photo-drop:active, .photo-drop.dragging { border-color: var(--blue); background: var(--blue-soft); }
     .photo-drop-icon {
-      font-size: 38px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      margin-bottom: 8px;
       color: var(--blue);
       line-height: 1;
       display: flex;
       justify-content: center;
     }
-    .photo-drop-title { font-weight: 600; font-size: 14.5px; color: var(--ink); margin-bottom: 4px; }
-    .photo-drop-hint { font-size: 12px; color: var(--ink-mute); }
+    .photo-drop-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+    .photo-drop-hint { font-size: 11.5px; color: var(--ink-mute); margin-bottom: 14px; }
+
+    .photo-drop-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .photo-choice {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--line);
+      background: var(--paper);
+      color: var(--ink-soft);
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.1s;
+    }
+    .photo-choice:active { transform: scale(0.97); }
+    .photo-choice.camera { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+    .photo-choice.camera:active { background: #D9E9FF; }
+    .photo-choice.gallery:active { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+    .photo-choice i { font-size: 16px; line-height: 1; }
 
     .photo-preview {
       display: flex;
@@ -858,6 +1081,16 @@
     }
     .photo-progress-text { font-size: 12px; color: var(--ink-soft); margin-top: 8px; }
 
+    .photo-preview.uploaded {
+      border-color: var(--mint);
+      background: var(--mint-soft);
+    }
+    .photo-preview.uploaded .photo-preview-size { color: #1A8F72; font-weight: 600; }
+    .photo-preview.uploaded .photo-preview-size::before {
+      content: '✓ ';
+      font-weight: 700;
+    }
+
     /* ---- empty state ---- */
     .empty-state {
       text-align: center;
@@ -901,7 +1134,7 @@
     }
     .stat-box.solved::before { background: var(--mint); }
     .stat-box.progress::before { background: var(--amber); }
-    .stat-box.gm::before { background: var(--red); }
+    .stat-box.gm::before { background: var(--dark-red); }
 
     .stat-icon {
       width: 36px; height: 36px;
@@ -915,7 +1148,7 @@
     }
     .stat-box.solved .stat-icon { background: var(--mint-soft); color: #1A8F72; }
     .stat-box.progress .stat-icon { background: var(--amber-soft); color: #B5791F; }
-    .stat-box.gm .stat-icon { background: var(--red-soft); color: #D13E3E; }
+    .stat-box.gm .stat-icon { background: var(--dark-red-soft); color: var(--dark-red); }
 
     .stat-num {
       font-family: var(--font-head);
@@ -1031,14 +1264,15 @@
     }
     tbody td { padding: 12px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; color: var(--ink-soft); }
     tbody tr:hover { background: var(--bg); }
-    .detail-text { max-width: 240px; white-space: normal; }
+    .detail-text { max-width: 320px; white-space: normal; }
 
     .badge {
       display: inline-block; padding: 4px 10px; font-size: 11px;
       font-weight: 600; border-radius: 6px; white-space: nowrap;
       background: var(--bg); color: var(--ink-soft);
     }
-    .badge.NeedGMSupport { background: var(--red-soft); color: #D13E3E; }
+    .badge.NeedGMSupport { background: var(--dark-red-soft); color: var(--dark-red); }
+    .badge.NotYetSolved { background: var(--red-soft); color: #D13E3E; }
 
     .status-select {
       font-size: 12px; padding: 6px 10px;
@@ -1072,6 +1306,7 @@
   let logFilters = { department: '', status: '', search: '' };
   let pendingStatusPill = 'Not Yet Solved';
   let connError = '';
+
   let pendingPhoto = null;
 
   const root = document.getElementById('onz-root');
@@ -1122,22 +1357,63 @@
     return (b / 1024 / 1024).toFixed(2) + ' MB';
   }
 
+  function formatDateOnly(v) {
+    if (!v) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    try {
+      const d = new Date(v);
+      if (isNaN(d.getTime())) return v;
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    } catch (e) { return v; }
+  }
+
+  function formatDateTime(iso) {
+    if (!iso) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = d.toLocaleString('en-GB', { month: 'short' });
+      const year = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return `${day} ${month} ${year}, ${hh}:${mm}`;
+    } catch (e) { return iso; }
+  }
+
+  function formatTimeOnly(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return hh + ':' + mm;
+    } catch (e) { return ''; }
+  }
+
   function isConfigured() {
     return SHEETS_URL && SHEETS_URL.indexOf('http') === 0 && SHEETS_URL.indexOf('PASTE_') === -1;
   }
 
-  // UIcons class prefixes: regular-rounded = "rr", solid-rounded = "sr"
   function fi(name, style) {
     const prefix = style === 's' ? 'sr' : 'rr';
     return `<i class="fi fi-${prefix}-${name}"></i>`;
   }
 
+  function statusClass(s) {
+    if (s === 'Solved') return 'solved';
+    if (s === 'In Progress') return 'progress';
+    if (s === 'Need GM Support') return 'gm';
+    if (s === 'Not Yet Solved') return 'notyet';
+    return 'notyet';
+  }
+
   // ---------- Google Drive URL helpers ----------
-  // Apps Script "uploadPhoto" typically returns a Drive *share* link
-  // (e.g. https://drive.google.com/file/d/FILE_ID/view?usp=sharing).
-  // That kind of link opens Drive's viewer page, not a raw image, so it
-  // renders blank inside an <img> tag. These helpers pull out the file ID
-  // and build URLs that actually serve the image bytes.
   function extractDriveFileId(url) {
     if (!url) return '';
     let m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
@@ -1261,6 +1537,178 @@
     document.body.appendChild(overlay);
   }
 
+  // ---------- detail modal ----------
+  function openDetailModal(id) {
+    const rec = complaints.find(c => c.id === id);
+    if (!rec) return;
+
+    const existing = document.getElementById('onz-detail-modal');
+    if (existing) existing.remove();
+
+    function row(k, v) {
+      const val = (v === undefined || v === null || String(v).trim() === '')
+        ? '<span class="v empty">—</span>'
+        : `<span class="v">${escapeHtml(String(v))}</span>`;
+      return `<div class="detail-row"><span class="k">${escapeHtml(k)}</span>${val}</div>`;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'onz-detail-modal';
+    overlay.className = 'detail-modal-overlay';
+
+    overlay.innerHTML = `
+      <div class="detail-modal" role="dialog" aria-modal="true">
+        <div class="detail-modal-head">
+          <div class="detail-modal-head-left">
+            <div class="detail-modal-report">${escapeHtml(rec.reportNo)}</div>
+            <div class="detail-modal-when">
+              ${escapeHtml(formatDateOnly(rec.date))}
+              ${rec.createdAt ? ' · logged ' + escapeHtml(formatTimeOnly(rec.createdAt)) : ''}
+            </div>
+          </div>
+          <button class="detail-modal-close" id="onz-detail-close" aria-label="Close">${fi('cross', 'r')}</button>
+        </div>
+
+        <div class="detail-modal-body">
+
+          <div class="detail-section">
+            <div class="detail-section-title">Report</div>
+            <div class="detail-row">
+              <span class="k">Title</span>
+              <span class="v">${escapeHtml(rec.title || '—')}</span>
+            </div>
+            <div class="detail-grid-2">
+              ${row('Department', rec.department)}
+              ${row('Date', formatDateOnly(rec.date))}
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Guest / Team</div>
+            <div class="detail-grid-2">
+              ${row('Guest name', rec.guestName)}
+              ${row('Room number', rec.roomNumber)}
+            </div>
+            ${row('Team member', rec.teamMember)}
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Problem</div>
+            <div class="detail-row">
+              <span class="v">${escapeHtml(rec.problem || '—')}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Story / Details</div>
+            <div class="detail-row">
+              <span class="v">${escapeHtml(rec.story || '—')}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Action Taken</div>
+            <div class="detail-row">
+              <span class="v">${escapeHtml(rec.actionTaken || '—')}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Follow-up</div>
+            <div class="detail-row">
+              <span class="v">${escapeHtml(rec.followUp || '—')}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Status & Wrap-up</div>
+            <div class="detail-row">
+              <span class="k">Status</span>
+              <span class="detail-badge ${statusClass(rec.status)}">${escapeHtml(rec.status || '—')}</span>
+            </div>
+            <div class="detail-grid-2">
+              ${row('GM support', rec.needGMSupport)}
+              ${row('Guest satisfied', rec.guestSatisfied)}
+            </div>
+            ${row('Responsible person', rec.responsiblePerson)}
+            ${row('Remarks', rec.remarks)}
+          </div>
+
+          ${rec.photoUrl ? `
+            <div class="detail-section">
+              <div class="detail-section-title">Photo</div>
+              <button class="detail-photo-btn" id="onz-detail-photo">
+                ${fi('picture', 's')} View photo
+              </button>
+            </div>
+          ` : ''}
+
+          <div class="detail-section">
+            <div class="detail-section-title">Actions</div>
+            <div class="detail-modal-actions">
+              <div class="row">
+                <select class="status-select" id="onz-detail-status" aria-label="Status">
+                  ${STATUSES.map(s => `<option value="${s}" ${rec.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+                </select>
+              </div>
+              <button class="detail-delete-btn" id="onz-detail-delete">
+                ${fi('trash', 'r')} Delete this complaint
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    function closeModal() {
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 180);
+    }
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+    overlay.querySelector('#onz-detail-close').addEventListener('click', closeModal);
+
+    const photoBtn = overlay.querySelector('#onz-detail-photo');
+    if (photoBtn) photoBtn.addEventListener('click', () => {
+      openPhotoModal(rec.photoUrl, rec.reportNo);
+    });
+
+    const statusSel = overlay.querySelector('#onz-detail-status');
+    if (statusSel) statusSel.addEventListener('change', async (e) => {
+      const newStatus = e.target.value;
+      const updated = Object.assign({}, rec, {
+        status: newStatus,
+        needGMSupport: newStatus === 'Need GM Support' ? 'Yes' : 'No'
+      });
+      try {
+        await updateComplaint(updated);
+        closeModal();
+        rerenderLogOnly();
+      } catch (err) {
+        alert('Could not update: ' + err.message);
+        e.target.value = rec.status;
+      }
+    });
+
+    const delBtn = overlay.querySelector('#onz-detail-delete');
+    if (delBtn) delBtn.addEventListener('click', async () => {
+      if (!confirm('Delete this complaint record?')) return;
+      try {
+        await deleteComplaint(rec.id);
+        closeModal();
+        rerenderLogOnly();
+      } catch (err) {
+        alert('Could not delete: ' + err.message);
+      }
+    });
+
+    function onKey(e) { if (e.key === 'Escape') { closeModal(); document.removeEventListener('keydown', onKey); } }
+    document.addEventListener('keydown', onKey);
+
+    document.body.appendChild(overlay);
+  }
+
   // ---------- FORM ----------
   function renderFormPanel() {
     return `
@@ -1314,14 +1762,25 @@
 
           <div class="section-title" data-num="7">Photo</div>
           <div class="photo-uploader" id="onz-photo-uploader">
-            <input type="file" id="onz-photo-input" accept="image/*" capture="environment" hidden>
+            <input type="file" id="onz-photo-input-camera" accept="image/*" capture="environment" hidden>
+            <input type="file" id="onz-photo-input-gallery" accept="image/*" hidden>
+
             <div class="photo-drop" id="onz-photo-drop">
               <div class="photo-drop-inner">
                 <div class="photo-drop-icon">${fi('camera', 'r')}</div>
-                <div class="photo-drop-title">Tap to add a photo</div>
-                <div class="photo-drop-hint">JPEG, PNG · up to 5 MB</div>
+                <div class="photo-drop-title">Add a photo</div>
+                <div class="photo-drop-hint">Take a new photo or choose from your library · up to 5 MB</div>
+                <div class="photo-drop-actions">
+                  <button type="button" class="photo-choice camera" id="onz-photo-camera">
+                    ${fi('camera', 's')} Camera
+                  </button>
+                  <button type="button" class="photo-choice gallery" id="onz-photo-gallery">
+                    ${fi('picture', 's')} Gallery
+                  </button>
+                </div>
               </div>
             </div>
+
             <div class="photo-preview" id="onz-photo-preview" style="display:none;">
               <img id="onz-photo-img" alt="Photo preview">
               <div class="photo-preview-info">
@@ -1332,7 +1791,7 @@
             </div>
             <div class="photo-progress" id="onz-photo-progress" style="display:none;">
               <div class="photo-progress-bar"></div>
-              <div class="photo-progress-text">Uploading photo…</div>
+              <div class="photo-progress-text" id="onz-photo-progress-text">Uploading photo…</div>
             </div>
           </div>
 
@@ -1362,55 +1821,136 @@
 
   function resetPhotoState() {
     pendingPhoto = null;
-    const input = document.getElementById('onz-photo-input');
+    const camInput = document.getElementById('onz-photo-input-camera');
+    const galInput = document.getElementById('onz-photo-input-gallery');
     const preview = document.getElementById('onz-photo-preview');
     const drop = document.getElementById('onz-photo-drop');
     const prog = document.getElementById('onz-photo-progress');
-    if (input) input.value = '';
-    if (preview) preview.style.display = 'none';
+    if (camInput) camInput.value = '';
+    if (galInput) galInput.value = '';
+    if (preview) {
+      preview.style.display = 'none';
+      preview.classList.remove('uploaded');
+    }
     if (drop) drop.style.display = 'block';
     if (prog) prog.style.display = 'none';
   }
 
-  function wirePhotoUploader() {
-    const input = document.getElementById('onz-photo-input');
-    const drop = document.getElementById('onz-photo-drop');
+  function refreshPhotoUI() {
     const preview = document.getElementById('onz-photo-preview');
+    const drop = document.getElementById('onz-photo-drop');
+    const prog = document.getElementById('onz-photo-progress');
+    const progText = document.getElementById('onz-photo-progress-text');
+    const sizeEl = document.getElementById('onz-photo-size');
+
+    if (!preview || !drop || !prog) return;
+
+    if (!pendingPhoto) {
+      preview.style.display = 'none';
+      drop.style.display = 'block';
+      prog.style.display = 'none';
+      return;
+    }
+
+    preview.style.display = 'flex';
+    drop.style.display = 'none';
+
+    if (pendingPhoto.uploading) {
+      preview.classList.remove('uploaded');
+      prog.style.display = 'block';
+      if (progText) progText.textContent = 'Uploading photo…';
+      if (sizeEl) sizeEl.textContent = bytesLabel(pendingPhoto.file.size);
+    } else if (pendingPhoto.uploaded && pendingPhoto.url) {
+      preview.classList.add('uploaded');
+      prog.style.display = 'none';
+      if (sizeEl) sizeEl.textContent = bytesLabel(pendingPhoto.file.size) + ' · uploaded';
+    } else if (pendingPhoto.error) {
+      preview.classList.remove('uploaded');
+      prog.style.display = 'none';
+      if (sizeEl) sizeEl.textContent = 'Upload failed — tap ✕ and re-add';
+    } else {
+      preview.classList.remove('uploaded');
+      prog.style.display = 'none';
+    }
+  }
+
+  async function uploadPendingPhoto() {
+    if (!pendingPhoto || !pendingPhoto.dataUrl) return;
+    if (pendingPhoto.uploading) return;
+    if (pendingPhoto.uploaded && pendingPhoto.url) return;
+
+    pendingPhoto.uploading = true;
+    pendingPhoto.error = '';
+    refreshPhotoUI();
+
+    try {
+      const up = await sheetsPost({
+        action: 'uploadPhoto',
+        dataUrl: pendingPhoto.dataUrl,
+        reportNo: pendingPhoto.reportNo || genReportNo()
+      });
+      pendingPhoto.url = up.url || '';
+      pendingPhoto.uploaded = !!pendingPhoto.url;
+      pendingPhoto.uploading = false;
+      if (!pendingPhoto.url) pendingPhoto.error = 'No URL returned from upload';
+    } catch (err) {
+      pendingPhoto.uploading = false;
+      pendingPhoto.uploaded = false;
+      pendingPhoto.error = err.message || String(err);
+    }
+    refreshPhotoUI();
+  }
+
+  function wirePhotoUploader() {
+    const camInput = document.getElementById('onz-photo-input-camera');
+    const galInput = document.getElementById('onz-photo-input-gallery');
+    const camBtn = document.getElementById('onz-photo-camera');
+    const galBtn = document.getElementById('onz-photo-gallery');
     const img = document.getElementById('onz-photo-img');
     const nameEl = document.getElementById('onz-photo-name');
-    const sizeEl = document.getElementById('onz-photo-size');
     const removeBtn = document.getElementById('onz-photo-remove');
 
-    if (!input || !drop) return;
+    if (!camInput || !galInput) return;
 
     function handleFile(file) {
       if (!file) return;
       if (!file.type.startsWith('image/')) { alert('Please pick an image file.'); return; }
       if (file.size > PHOTO_MAX_BYTES) { alert('Image is larger than ' + bytesLabel(PHOTO_MAX_BYTES) + '.'); return; }
+
+      const reportNo = genReportNo();
+
       const reader = new FileReader();
       reader.onload = (ev) => {
-        pendingPhoto = { file, dataUrl: ev.target.result };
+        pendingPhoto = {
+          file,
+          dataUrl: ev.target.result,
+          url: '',
+          uploading: false,
+          uploaded: false,
+          error: '',
+          reportNo
+        };
         if (img) img.src = ev.target.result;
         if (nameEl) nameEl.textContent = file.name;
-        if (sizeEl) sizeEl.textContent = bytesLabel(file.size);
-        drop.style.display = 'none';
-        preview.style.display = 'flex';
+        refreshPhotoUI();
+        uploadPendingPhoto();
       };
       reader.readAsDataURL(file);
     }
 
-    drop.addEventListener('click', () => input.click());
-    input.addEventListener('change', (e) => handleFile(e.target.files[0]));
-    if (removeBtn) removeBtn.addEventListener('click', resetPhotoState);
-
-    ['dragenter', 'dragover'].forEach(ev =>
-      drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('dragging'); }));
-    ['dragleave', 'drop'].forEach(ev =>
-      drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('dragging'); }));
-    drop.addEventListener('drop', (e) => {
-      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if (f) handleFile(f);
+    if (camBtn) camBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      camInput.click();
     });
+    if (galBtn) galBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galInput.click();
+    });
+
+    camInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+    galInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+    if (removeBtn) removeBtn.addEventListener('click', () => resetPhotoState());
   }
 
   function wireFormPanel() {
@@ -1439,7 +1979,6 @@
       e.preventDefault();
       const msg = document.getElementById('onz-form-msg');
       const btn = document.getElementById('onz-submit-btn');
-      const prog = document.getElementById('onz-photo-progress');
       const fd = new FormData(form);
 
       const missing = [];
@@ -1452,10 +1991,33 @@
         return;
       }
 
+      if (pendingPhoto && pendingPhoto.uploading) {
+        msg.style.color = 'var(--blue)';
+        msg.textContent = 'Waiting for photo upload to finish…';
+        const start = Date.now();
+        while (pendingPhoto && pendingPhoto.uploading && Date.now() - start < 30000) {
+          await new Promise(r => setTimeout(r, 300));
+        }
+      }
+
+      if (pendingPhoto && !pendingPhoto.uploaded && !pendingPhoto.error) {
+        await uploadPendingPhoto();
+      }
+
+      if (pendingPhoto && !pendingPhoto.uploaded) {
+        msg.style.color = 'var(--red)';
+        msg.textContent = 'Photo upload failed. Remove the photo or try again. ' +
+          (pendingPhoto.error ? '(' + pendingPhoto.error + ')' : '');
+        return;
+      }
+
+      const rawDate = fd.get('date') || '';
+      const cleanDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : todayISO();
+
       const record = {
         id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
         reportNo: genReportNo(),
-        date: fd.get('date') || todayISO(),
+        date: cleanDate,
         department: fd.get('department'),
         title: fd.get('title'),
         guestName: fd.get('guestName') || '',
@@ -1471,26 +2033,14 @@
         guestSatisfied: fd.get('guestSatisfied') || 'Pending',
         remarks: fd.get('remarks') || '',
         createdAt: new Date().toISOString(),
-        photoUrl: ''
+        photoUrl: (pendingPhoto && pendingPhoto.uploaded) ? pendingPhoto.url : ''
       };
 
       btn.disabled = true;
       msg.style.color = 'var(--blue)';
+      msg.textContent = 'Saving…';
 
       try {
-        if (pendingPhoto && pendingPhoto.dataUrl) {
-          msg.textContent = 'Uploading photo…';
-          if (prog) prog.style.display = 'block';
-          const up = await sheetsPost({
-            action: 'uploadPhoto',
-            dataUrl: pendingPhoto.dataUrl,
-            reportNo: record.reportNo
-          });
-          if (prog) prog.style.display = 'none';
-          record.photoUrl = up.url || '';
-        }
-
-        msg.textContent = 'Saving…';
         await addComplaint(record);
         pendingStatusPill = 'Not Yet Solved';
         resetPhotoState();
@@ -1498,7 +2048,6 @@
         form.reset();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } catch (err) {
-        if (prog) prog.style.display = 'none';
         msg.style.color = 'var(--red)';
         msg.textContent = 'Could not save: ' + err.message;
       }
@@ -1521,12 +2070,18 @@
     });
   }
 
+  function badgeClassForStatus(s) {
+    if (s === 'Need GM Support') return 'NeedGMSupport';
+    if (s === 'Not Yet Solved') return 'NotYetSolved';
+    return '';
+  }
+
   function renderLogPanel() {
     const rows = filteredComplaints();
     return `
       <div class="page-head">
         <div class="page-title">Complaint Log</div>
-        <div class="page-sub">Browse, filter, and update all submitted complaints</div>
+        <div class="page-sub">Tap any complaint to see full details</div>
       </div>
       <div class="panel">
         ${connError ? `<div class="row-count" style="color:var(--red)">${escapeHtml(connError)}</div>` : ''}
@@ -1552,29 +2107,20 @@
         ` : `
           <div class="log-cards">
             ${rows.map(c => `
-              <div class="log-card" data-id="${c.id}">
+              <div class="log-card" data-open="${c.id}">
                 <div class="log-card-top">
                   <div class="log-card-report">${escapeHtml(c.reportNo)}</div>
-                  <div class="log-card-date">${escapeHtml(c.date)}</div>
+                  <div class="log-card-date">
+                    ${escapeHtml(formatDateOnly(c.date))}
+                    ${c.createdAt ? ' · ' + escapeHtml(formatTimeOnly(c.createdAt)) : ''}
+                  </div>
                 </div>
                 <div class="log-card-title">${escapeHtml(c.title)}</div>
-                <div class="log-card-meta">
-                  ${c.department ? `<span>${fi('tag', 'r')} ${escapeHtml(c.department)}</span>` : ''}
-                  ${(c.guestName || c.roomNumber) ? `<span>${fi('user', 'r')} ${escapeHtml(c.guestName)}${c.roomNumber ? ' · ' + escapeHtml(c.roomNumber) : ''}</span>` : ''}
-                  ${c.needGMSupport === 'Yes' ? `<span style="background:var(--red-soft); color:#D13E3E;">${fi('triangle-warning', 's')} GM support</span>` : ''}
-                  <span>${fi('check', 'r')} ${escapeHtml(c.guestSatisfied)}</span>
-                </div>
-                ${c.problem ? `<div class="log-card-problem">${escapeHtml(c.problem)}</div>` : ''}
-                ${c.photoUrl ? `
-                  <button class="photo-view-btn" data-photo="${escapeHtml(c.photoUrl)}" data-report="${escapeHtml(c.reportNo)}">
-                    ${fi('picture', 's')} View photo
+                <div class="log-card-foot">
+                  <span class="log-card-status" data-status="${escapeHtml(c.status)}">${escapeHtml(c.status)}</span>
+                  <button class="log-card-view" data-open-btn="${c.id}">
+                    ${fi('eye', 'r')} View detail
                   </button>
-                ` : ''}
-                <div class="log-card-actions">
-                  <select class="status-select" data-id="${c.id}" aria-label="Status">
-                    ${STATUSES.map(s => `<option value="${s}" ${c.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-                  </select>
-                  <button class="icon-btn" data-del="${c.id}" title="Delete">${fi('trash', 'r')}</button>
                 </div>
               </div>
             `).join('')}
@@ -1583,28 +2129,24 @@
           <div class="log-table-wrap">
             <table>
               <thead><tr>
-                <th>Report</th><th>Date</th><th>Dept</th><th>Title</th>
-                <th>Guest</th><th>Problem</th><th>Photo</th><th>Status</th><th>GM</th><th></th>
+                <th>Report</th><th>Date</th><th>Logged</th><th>Dept</th><th>Title</th>
+                <th>Status</th><th>GM</th><th></th>
               </tr></thead>
               <tbody>
                 ${rows.map(c => `
-                  <tr data-id="${c.id}">
+                  <tr>
                     <td><strong>${escapeHtml(c.reportNo)}</strong></td>
-                    <td>${escapeHtml(c.date)}</td>
+                    <td>${escapeHtml(formatDateOnly(c.date))}</td>
+                    <td>${c.createdAt ? escapeHtml(formatDateTime(c.createdAt)) : '<span style="color:var(--ink-mute);font-size:12px;">—</span>'}</td>
                     <td>${escapeHtml(c.department)}</td>
                     <td class="detail-text">${escapeHtml(c.title)}</td>
-                    <td>${escapeHtml(c.guestName)}${c.roomNumber ? ' · ' + escapeHtml(c.roomNumber) : ''}</td>
-                    <td class="detail-text">${escapeHtml(c.problem)}</td>
-                    <td>${c.photoUrl
-                      ? `<button class="photo-view-btn" data-photo="${escapeHtml(c.photoUrl)}" data-report="${escapeHtml(c.reportNo)}">${fi('picture', 's')} View</button>`
-                      : '<span style="color:var(--ink-mute);font-size:12px;">—</span>'}</td>
-                    <td>
-                      <select class="status-select" data-id="${c.id}">
-                        ${STATUSES.map(s => `<option value="${s}" ${c.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-                      </select>
-                    </td>
+                    <td><span class="badge ${badgeClassForStatus(c.status)}">${escapeHtml(c.status)}</span></td>
                     <td><span class="badge ${c.needGMSupport === 'Yes' ? 'NeedGMSupport' : ''}">${escapeHtml(c.needGMSupport)}</span></td>
-                    <td><button class="icon-btn" data-del="${c.id}" title="Delete">${fi('trash', 'r')}</button></td>
+                    <td>
+                      <button class="log-card-view" data-open-btn="${c.id}">
+                        ${fi('eye', 'r')} View
+                      </button>
+                    </td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -1635,37 +2177,15 @@
     if (fdept) fdept.addEventListener('change', (e) => { logFilters.department = e.target.value; rerenderLogOnly(); });
     if (fstat) fstat.addEventListener('change', (e) => { logFilters.status = e.target.value; rerenderLogOnly(); });
 
-    document.querySelectorAll('.status-select').forEach(sel => {
-      sel.addEventListener('change', async (e) => {
-        const id = e.target.dataset.id;
-        const rec = complaints.find(c => c.id === id);
-        if (!rec) return;
-        const updated = Object.assign({}, rec, {
-          status: e.target.value,
-          needGMSupport: e.target.value === 'Need GM Support' ? 'Yes' : 'No'
-        });
-        const ioMsg = document.getElementById('onz-io-msg');
-        try { await updateComplaint(updated); }
-        catch (err) { if (ioMsg) { ioMsg.style.color = 'var(--red)'; ioMsg.textContent = 'Could not update: ' + err.message; } }
-        rerenderLogOnly();
+    document.querySelectorAll('[data-open]').forEach(card => {
+      card.addEventListener('click', () => {
+        openDetailModal(card.dataset.open);
       });
     });
-
-    document.querySelectorAll('[data-del]').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.closest('[data-del]').dataset.del;
-        if (!confirm('Delete this complaint record?')) return;
-        try { await deleteComplaint(id); }
-        catch (err) { const ioMsg = document.getElementById('onz-io-msg'); if (ioMsg) { ioMsg.style.color = 'var(--red)'; ioMsg.textContent = 'Could not delete: ' + err.message; } }
-        rerenderLogOnly();
-      });
-    });
-
-    document.querySelectorAll('[data-photo]').forEach(btn => {
+    document.querySelectorAll('[data-open-btn]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const url = e.currentTarget.dataset.photo;
-        const report = e.currentTarget.dataset.report;
-        if (url) openPhotoModal(url, report);
+        e.stopPropagation();
+        openDetailModal(btn.dataset.openBtn);
       });
     });
 
@@ -1746,7 +2266,7 @@
             ${STATUSES.map(s => `
               <div class="bar-row"><div class="bar-label">${s}</div>
                 <div class="bar-track"><div class="bar-fill" style="width:${(byStatus[s] / maxStatus * 100).toFixed(0)}%; background:${
-                  s === 'Solved' ? 'var(--mint)' : s === 'In Progress' ? 'var(--amber)' : s === 'Need GM Support' ? 'var(--red)' : 'var(--blue)'
+                  s === 'Solved' ? 'var(--mint)' : s === 'In Progress' ? 'var(--amber)' : s === 'Need GM Support' ? 'var(--dark-red)' : 'var(--red)'
                 }"></div></div>
                 <div class="bar-val">${byStatus[s]}</div></div>
             `).join('')}
@@ -1858,7 +2378,7 @@
   // ---------- INIT ----------
   async function init() {
     try { loadFonts(); } catch (e) {}
-    render(); // shows the loading animation immediately
+    render();
     try { await fetchAllComplaints(); } catch (e) { complaints = []; }
     loaded = true;
     render();
