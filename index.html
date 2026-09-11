@@ -770,6 +770,24 @@
       color: var(--ink-mute);
       text-align: center;
     }
+    .photo-modal-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 40px 20px;
+      color: var(--ink-mute);
+      text-align: center;
+      background: var(--paper);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--line);
+    }
+    .photo-modal-fallback i { font-size: 30px; color: var(--ink-mute); }
+    .photo-modal-fallback a {
+      color: var(--blue);
+      font-weight: 600;
+      text-decoration: none;
+    }
 
     /* ---- photo uploader ---- */
     .photo-uploader { margin-top: 4px; }
@@ -1114,6 +1132,33 @@
     return `<i class="fi fi-${prefix}-${name}"></i>`;
   }
 
+  // ---------- Google Drive URL helpers ----------
+  // Apps Script "uploadPhoto" typically returns a Drive *share* link
+  // (e.g. https://drive.google.com/file/d/FILE_ID/view?usp=sharing).
+  // That kind of link opens Drive's viewer page, not a raw image, so it
+  // renders blank inside an <img> tag. These helpers pull out the file ID
+  // and build URLs that actually serve the image bytes.
+  function extractDriveFileId(url) {
+    if (!url) return '';
+    let m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+    if (m) return m[1];
+    m = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+    if (m) return m[1];
+    return '';
+  }
+
+  function driveDirectUrl(url) {
+    const id = extractDriveFileId(url);
+    if (!id) return url;
+    return `https://lh3.googleusercontent.com/d/${id}`;
+  }
+
+  function driveThumbUrl(url) {
+    const id = extractDriveFileId(url);
+    if (!id) return url;
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
+  }
+
   // ---------- data layer ----------
   async function fetchAllComplaints() {
     connError = '';
@@ -1166,6 +1211,9 @@
     const existing = document.getElementById('onz-photo-modal');
     if (existing) existing.remove();
 
+    const primarySrc = driveDirectUrl(photoUrl);
+    const fallbackSrc = driveThumbUrl(photoUrl);
+
     const overlay = document.createElement('div');
     overlay.id = 'onz-photo-modal';
     overlay.className = 'photo-modal-overlay';
@@ -1176,11 +1224,31 @@
           <button class="photo-modal-close" id="onz-photo-modal-close" aria-label="Close">${fi('cross', 'r')}</button>
         </div>
         <div class="photo-modal-body">
-          <img src="${escapeHtml(photoUrl)}" alt="Complaint photo">
+          <img id="onz-modal-img" src="${escapeHtml(primarySrc)}" data-fallback="${escapeHtml(fallbackSrc)}" data-orig="${escapeHtml(photoUrl)}" data-stage="0" alt="Complaint photo">
+          <div class="photo-modal-fallback" id="onz-modal-fallback">
+            ${fi('picture', 'r')}
+            <div>Couldn't load a preview of this photo.</div>
+            <a href="${escapeHtml(photoUrl)}" target="_blank" rel="noopener">Open in Google Drive ↗</a>
+          </div>
           <div class="photo-modal-caption">Tap outside or press ✕ to close</div>
         </div>
       </div>
     `;
+
+    const imgEl = overlay.querySelector('#onz-modal-img');
+    const fallbackEl = overlay.querySelector('#onz-modal-fallback');
+    if (imgEl) {
+      imgEl.addEventListener('error', function () {
+        const stage = imgEl.dataset.stage;
+        if (stage === '0' && imgEl.dataset.fallback && imgEl.dataset.fallback !== imgEl.dataset.orig) {
+          imgEl.dataset.stage = '1';
+          imgEl.src = imgEl.dataset.fallback;
+        } else {
+          imgEl.style.display = 'none';
+          if (fallbackEl) fallbackEl.style.display = 'flex';
+        }
+      });
+    }
 
     function closeModal() {
       overlay.style.opacity = '0';
